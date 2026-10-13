@@ -1,0 +1,52 @@
+{
+  "name": "tauan-mods",
+  "description": "Tauan's Claude Code mods: one /mods pane for all of them, plus Workers (subagents as Norse and Roman gods).",
+  "owner": { "name": "Tauan Camargo", "url": "https://github.com/tauantcamargo" },
+  "plugins": [
+    {
+      "name": "mods",
+      "description": "One /mods pane with a tab per installed mod (fork of mvacoimbra/claude-mods-hub with a Workers tab)",
+      "source": { "source": "github", "repo": "tauantcamargo/claude-mods-hub" }
+    },
+    {
+      "name": "workers",
+      "description": "Salão dos Deuses: subagents become Norse and Roman gods in a carved-stone pane, with a tab in /mods",
+      "source": "./plugins/workers"
+    },
+    {
+      "name": "cache-tax",
+      "description": "Keeps the one-hour prompt cache warm during breaks and stops a cold send once. Warming costs tokens. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "github", "repo": "mvacoimbra/cache-tax" }
+    },
+    {
+      "name": "skins",
+      "description": "Tool rows, code/diff/table/Mermaid cards, a usage band and fifteen themes. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "github", "repo": "mvacoimbra/claude-skins" }
+    },
+    {
+      "name": "filetree",
+      "description": "IDE-style file tree that shows what Claude is doing and where. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "github", "repo": "mvacoimbra/claude-code-filetree" }
+    },
+    {
+      "name": "savvy-progress",
+      "description": "Progress bar and agents panel for subagents. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "git-subdir", "url": "https://github.com/mvacoimbra/claude-kit.git", "path": "plugins/savvy-progress", "ref": "main" }
+    },
+    {
+      "name": "replay-theater",
+      "description": "Step through the file edits Claude made in the last turn, one diff at a time. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "git-subdir", "url": "https://github.com/mvacoimbra/claude-code-playground.git", "path": "claude-code/mods/replay-theater", "ref": "main" }
+    },
+    {
+      "name": "blast-radius",
+      "description": "Holds risky shell commands and shows what they would change, with Proceed and Cancel. (upstream)",
+      "source": { "source": "git-subdir", "url": "https://github.com/anthropics/claude-code-playground.git", "path": "claude-code/mods/blast-radius", "ref": "main" }
+    },
+    {
+      "name": "reflect-mod",
+      "description": "Finds reusable corrections in short prompts and saves them to CLAUDE.md from a band above the prompt. (upstream)",
+      "source": { "source": "git-subdir", "url": "https://github.com/bayramannakov/claude-reflect.git", "path": "mod", "ref": "main" }
+    }
+  ]
+}

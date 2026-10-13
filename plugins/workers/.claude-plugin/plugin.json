@@ -1,0 +1,11 @@
+{
+  "name": "workers",
+  "version": "0.3.0",
+  "description": "Sal\u00e3o dos Deuses: subagents become Norse and Roman gods in a carved-stone pane (/workers) with runes, laurel, Roman-numeral progress, an oracle check and a war band above the prompt.",
+  "author": {
+    "name": "Tauan Camargo",
+    "url": "https://github.com/tauantcamargo"
+  },
+  "types": "./types/index.d.ts",
+  "license": "MIT"
+}
