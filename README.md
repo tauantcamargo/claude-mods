@@ -11,8 +11,8 @@ My Claude Code mods in one marketplace. `/mods` opens one pane with a tab per mo
 | filetree | mvacoimbra fork | File tree of what Claude touches |
 | savvy-progress | mvacoimbra fork | Subagent progress and agents panel |
 | replay-theater | mvacoimbra fork | Replay the last turn's edits |
-| blast-radius | anthropics/claude-code-playground | Holds risky shell commands for confirmation |
-| reflect-mod | bayramannakov/claude-reflect | Saves your corrections to CLAUDE.md |
+| blast-radius | mvacoimbra/claude-code-playground | Holds risky shell commands for confirmation |
+| reflect-mod | mvacoimbra/claude-reflect | Saves your corrections to CLAUDE.md |
 
 ## Install
 

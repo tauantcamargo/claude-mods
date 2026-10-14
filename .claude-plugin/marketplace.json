@@ -40,13 +40,13 @@
     },
     {
       "name": "blast-radius",
-      "description": "Holds risky shell commands and shows what they would change, with Proceed and Cancel. (upstream)",
-      "source": { "source": "git-subdir", "url": "https://github.com/anthropics/claude-code-playground.git", "path": "claude-code/mods/blast-radius", "ref": "main" }
+      "description": "Holds risky shell commands and shows what they would change, with Proceed and Cancel. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "git-subdir", "url": "https://github.com/mvacoimbra/claude-code-playground.git", "path": "claude-code/mods/blast-radius", "ref": "main" }
     },
     {
       "name": "reflect-mod",
-      "description": "Finds reusable corrections in short prompts and saves them to CLAUDE.md from a band above the prompt. (upstream)",
-      "source": { "source": "git-subdir", "url": "https://github.com/bayramannakov/claude-reflect.git", "path": "mod", "ref": "main" }
+      "description": "Finds reusable corrections in short prompts and saves them to CLAUDE.md from a band above the prompt. (mvacoimbra fork, joins /mods)",
+      "source": { "source": "git-subdir", "url": "https://github.com/mvacoimbra/claude-reflect.git", "path": "mod", "ref": "main" }
     }
   ]
 }
