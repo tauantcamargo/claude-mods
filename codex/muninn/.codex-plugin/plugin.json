@@ -1,0 +1,23 @@
+{
+  "name": "muninn",
+  "version": "0.1.0",
+  "description": "Muninn, Odin's raven of memory: your ai-memory in Codex. An app with this folder's memory (counts, the last handoff, recent pages), search and pages. Read-only.",
+  "author": { "name": "Tauan Camargo", "url": "https://github.com/tauantcamargo" },
+  "homepage": "https://github.com/tauantcamargo/claude-mods",
+  "repository": "https://github.com/tauantcamargo/claude-mods",
+  "license": "MIT",
+  "keywords": ["ai-memory", "memory", "handoff", "mcp", "mcp-app"],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Muninn",
+    "shortDescription": "Your ai-memory, at a glance",
+    "longDescription": "Muninn reads your own ai-memory server (github.com/akitaonrails/ai-memory) and shows the current folder's project: its pages, sessions and observations, the last handoff with its next steps, recent pages, a search across the project or every project, and any page as markdown. It only reads; capture stays with ai-memory's hooks.",
+    "developerName": "Tauan Camargo",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read"],
+    "defaultPrompt": ["Muninn: what does memory know about this project?", "Where did we leave off?"],
+    "brandColor": "#C96442",
+    "composerIcon": "./assets/raven.svg",
+    "logo": "./assets/raven.svg"
+  }
+}

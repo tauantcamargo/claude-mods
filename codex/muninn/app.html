@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Muninn</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: var(--color-background-primary, #ffffff);
+    --bg-2: var(--color-background-secondary, #f6f6f4);
+    --fg: var(--color-text-primary, #1f1e1d);
+    --muted: var(--color-text-secondary, #6f6d66);
+    --faint: var(--color-text-tertiary, #9c9a92);
+    --line: var(--color-border-primary, rgba(0, 0, 0, 0.1));
+    --accent: #c96442;
+    --ok: #2c7a39;
+    --warn: #966c1e;
+    --err: #ab2b3f;
+    --radius: var(--border-radius-md, 10px);
+    --font: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif);
+    --mono: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: var(--color-background-primary, #1f1f1e);
+      --bg-2: var(--color-background-secondary, #262624);
+      --fg: var(--color-text-primary, #e8e6dc);
+      --muted: var(--color-text-secondary, #9c9a92);
+      --faint: var(--color-text-tertiary, #6f6d66);
+      --line: var(--color-border-primary, rgba(255, 255, 255, 0.12));
+      --accent: #d97757;
+      --ok: #4eba65;
+      --warn: #e0b13c;
+      --err: #ff6b80;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: var(--color-background-primary, #1f1f1e);
+    --bg-2: var(--color-background-secondary, #262624);
+    --fg: var(--color-text-primary, #e8e6dc);
+    --muted: var(--color-text-secondary, #9c9a92);
+    --faint: var(--color-text-tertiary, #6f6d66);
+    --line: var(--color-border-primary, rgba(255, 255, 255, 0.12));
+    --accent: #d97757;
+    --ok: #4eba65;
+    --warn: #e0b13c;
+    --err: #ff6b80;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 13px/1.45 var(--font); }
+  body { padding: 14px 16px 16px; }
+  button, input, select { font: inherit; color: inherit; }
+  .top { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .top h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  .top .tag { color: var(--faint); }
+  .grow { flex: 1; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .dot.ok { background: var(--ok); } .dot.err { background: var(--err); } .dot.warn { background: var(--warn); }
+  .card { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; background: var(--bg); }
+  .card h2 { font-size: 12px; font-weight: 600; margin: 0 0 6px; color: var(--muted); text-transform: none; }
+  .where { font-weight: 600; word-break: break-all; }
+  .sub { color: var(--muted); }
+  .faint { color: var(--faint); }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 4px; }
+  .stat { background: var(--bg-2); border-radius: 8px; padding: 8px 10px; }
+  .stat b { display: block; font-size: 17px; font-weight: 600; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .handoff.open { border-color: color-mix(in srgb, var(--warn) 55%, var(--line)); }
+  .handoff .state { font-weight: 600; }
+  .handoff .state.open { color: var(--warn); } .handoff .state.accepted { color: var(--ok); }
+  .handoff ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+  form.search { display: flex; gap: 6px; }
+  input[type="search"], select { flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  input[type="search"]:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; }
+  .btn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 6px 11px; cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--bg-2); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.link { border: 0; padding: 4px 6px; color: var(--muted); background: transparent; }
+  .btn.link:hover { color: var(--fg); background: transparent; }
+  .list { margin: 0; padding: 0; list-style: none; }
+  .list li + li { border-top: 1px solid var(--line); }
+  .item { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 8px 2px; cursor: pointer; border-radius: 6px; }
+  .item:hover { background: var(--bg-2); }
+  .item .title { font-weight: 500; }
+  .item .meta { color: var(--muted); font-size: 12px; }
+  .item .snippet { color: var(--muted); font-size: 12px; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .nav { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+  .notice { color: var(--muted); }
+  .error { color: var(--err); }
+  .md { line-height: 1.55; }
+  .md h1, .md h2, .md h3 { margin: 12px 0 6px; line-height: 1.3; }
+  .md h1 { font-size: 16px; } .md h2 { font-size: 14px; } .md h3 { font-size: 13px; }
+  .md p { margin: 6px 0; }
+  .md ul, .md ol { margin: 6px 0; padding-left: 20px; }
+  .md code { font-family: var(--mono); font-size: 12px; background: var(--bg-2); padding: 1px 4px; border-radius: 4px; }
+  .md pre { background: var(--bg-2); padding: 10px; border-radius: 8px; overflow-x: auto; }
+  .md pre code { background: transparent; padding: 0; }
+  .md a { color: var(--accent); }
+  .raven { color: var(--accent); flex: none; }
+  .busy { opacity: 0.55; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="root"><p class="faint">Muninn…</p></div>
+<script>
+(() => {
+  'use strict'
+
+  const WORDS = {
+    pt: {
+      tagline: 'a memória do ai-memory', online: 'online', offline: 'fora do ar', unauthorized: 'sem acesso',
+      offlineHint: url => `O servidor do ai-memory não respondeu em ${url}.`,
+      unauthorizedHint: 'O servidor recusou o token de auth-tokens/default.',
+      nothing: repo => `Nada capturado ainda para “${repo}”. A primeira sessão nesta pasta cria o projeto.`,
+      pick: 'Projeto', pages: n => (n === 1 ? 'página' : 'páginas'), sessions: n => (n === 1 ? 'sessão' : 'sessões'), observations: n => (n === 1 ? 'observação' : 'observações'), last: 'Última atividade',
+      handoff: 'Handoff', from: agent => `de ${agent}`, next: 'Próximos passos', open: 'Em aberto',
+      states: { open: 'pendente', accepted: 'entregue', expired: 'expirado' },
+      search: 'Buscar na memória', placeholder: 'termo, decisão, erro…', go: 'Buscar',
+      results: (n, q, all) => `${n} ${n === 1 ? 'resultado' : 'resultados'} para “${q}”${all ? ' em todos os projetos' : ''}`,
+      none: q => `Nada encontrado para “${q}”.`, everywhere: 'Em todos os projetos', here: 'Só neste projeto',
+      recent: 'Recentes', noRecent: 'Nada consolidado ainda: as páginas aparecem quando uma sessão termina.',
+      back: '← Voltar', refresh: 'Atualizar', web: 'Abrir Web UI', never: 'nenhuma ainda',
+      ago: m => (m < 1 ? 'agora' : m < 60 ? `há ${m} min` : m < 2880 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dias`),
+      kinds: { session: 'sessão', decision: 'decisão', gotcha: 'armadilha', concept: 'conceito', procedure: 'procedimento', rule: 'regra', note: 'nota', fact: 'fato' },
+    },
+    en: {
+      tagline: 'your ai-memory', online: 'online', offline: 'offline', unauthorized: 'no access',
+      offlineHint: url => `The ai-memory server did not answer at ${url}.`,
+      unauthorizedHint: 'The server refused the token in auth-tokens/default.',
+      nothing: repo => `Nothing captured yet for “${repo}”. The first session in this folder creates the project.`,
+      pick: 'Project', pages: n => (n === 1 ? 'page' : 'pages'), sessions: n => (n === 1 ? 'session' : 'sessions'), observations: n => (n === 1 ? 'observation' : 'observations'), last: 'Last activity',
+      handoff: 'Handoff', from: agent => `from ${agent}`, next: 'Next steps', open: 'Open questions',
+      states: { open: 'pending', accepted: 'delivered', expired: 'expired' },
+      search: 'Search memory', placeholder: 'a term, a decision, an error…', go: 'Search',
+      results: (n, q, all) => `${n} ${n === 1 ? 'result' : 'results'} for “${q}”${all ? ' in every project' : ''}`,
+      none: q => `Nothing found for “${q}”.`, everywhere: 'Every project', here: 'This project only',
+      recent: 'Recent', noRecent: 'Nothing compiled yet: pages appear when a session ends.',
+      back: '← Back', refresh: 'Refresh', web: 'Open web UI', never: 'none yet',
+      ago: m => (m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`),
+      kinds: { session: 'session', decision: 'decision', gotcha: 'gotcha', concept: 'concept', procedure: 'procedure', rule: 'rule', note: 'note', fact: 'fact' },
+    },
+  }
+
+  const RAVEN = '<svg class="raven" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 8.2l-3.2-.9a4.3 4.3 0 0 0-8.1 1.6c-.3 2.4-1.8 4.3-4.2 5.4L3 15.5c2.6 1.6 6 2.1 9 1.3 4-1.1 6.3-4.4 6.5-8z"/><path d="M15.2 7.8v.01"/><path d="M10.5 17l-1 3.5M13.5 16.4l.5 3.6"/></svg>'
+
+  const state = { lang: (navigator.language || 'pt').toLowerCase().startsWith('pt') ? 'pt' : 'en', args: {}, view: null, snapshot: null, query: '', everywhere: false, hits: [], page: null, busy: false, error: null }
+  const w = () => WORDS[state.lang]
+  const root = document.getElementById('root')
+
+  // --- The MCP Apps bridge: JSON-RPC with the host over postMessage.
+  let nextId = 1
+  const pending = new Map()
+
+  function request(method, params) {
+    const id = nextId++
+    window.parent.postMessage({ jsonrpc: '2.0', id, method, params }, '*')
+
+    return new Promise((resolve, reject) => {
+      pending.set(id, { resolve, reject })
+      setTimeout(() => {
+        if (pending.delete(id)) reject(new Error(`${method} timed out`))
+      }, 30000)
+    })
+  }
+
+  const notify = (method, params) => window.parent.postMessage({ jsonrpc: '2.0', method, params }, '*')
+
+  function applyContext(context) {
+    if (!context) return
+    if (context.theme === 'dark' || context.theme === 'light') document.documentElement.dataset.theme = context.theme
+    const variables = context.styles && context.styles.variables
+    if (variables) for (const [name, value] of Object.entries(variables)) if (value) document.documentElement.style.setProperty(name, value)
+    if (typeof context.locale === 'string') state.lang = context.locale.toLowerCase().startsWith('pt') ? 'pt' : 'en'
+  }
+
+  function show(result) {
+    const data = result && result.structuredContent
+    if (!data) return
+    if (data.snapshot) state.snapshot = data.snapshot
+    if (data.kind === 'search') Object.assign(state, { view: 'search', query: data.query || '', everywhere: Boolean(data.everywhere), hits: data.hits || [] })
+    else if (data.kind === 'page') Object.assign(state, { view: 'page', page: data.page })
+    else state.view = 'dashboard'
+    render()
+  }
+
+  window.addEventListener('message', event => {
+    const message = event.data
+    if (!message || message.jsonrpc !== '2.0') return
+
+    if (message.method === undefined && message.id !== undefined) {
+      const waiting = pending.get(message.id)
+      if (!waiting) return
+      pending.delete(message.id)
+      if (message.error) waiting.reject(new Error(message.error.message || 'error'))
+      else waiting.resolve(message.result)
+      return
+    }
+
+    switch (message.method) {
+      case 'ui/notifications/tool-input':
+        state.args = (message.params && message.params.arguments) || {}
+        break
+      case 'ui/notifications/tool-result':
+        show(message.params)
+        break
+      case 'ui/notifications/host-context-changed':
+        applyContext(message.params)
+        render()
+        break
+      case 'ui/resource-teardown':
+      case 'ping':
+        if (message.id !== undefined) window.parent.postMessage({ jsonrpc: '2.0', id: message.id, result: {} }, '*')
+        break
+    }
+  })
+
+  async function call(name, args) {
+    state.busy = true
+    render()
+    try {
+      const result = await request('tools/call', { name, arguments: { cwd: state.args.cwd, ...args } })
+      state.error = result && result.isError ? (result.content && result.content[0] && result.content[0].text) || 'error' : null
+      show(result)
+    } catch (error) {
+      state.error = String(error.message || error)
+    } finally {
+      state.busy = false
+      render()
+    }
+  }
+
+  // --- Drawing
+  const esc = text => String(text ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+  const kind = k => w().kinds[k] || k
+  const ago = iso => (iso ? w().ago(Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000))) : w().never)
+  const scopeLabel = s => (s && s.scope ? `${s.scope.workspace} / ${s.scope.project}` : '')
+
+  function inline(text) {
+    return esc(text)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" data-link="$2">$1</a>')
+  }
+
+  // A small, escaping markdown renderer: headings, lists, fences and paragraphs.
+  function markdown(source) {
+    const out = []
+    let list = null
+    let fence = null
+    let para = []
+    const flush = () => {
+      if (para.length) out.push(`<p>${inline(para.join(' '))}</p>`)
+      para = []
+    }
+    const close = () => {
+      if (list) out.push(`</${list}>`)
+      list = null
+    }
+    for (const line of String(source).split('\n')) {
+      if (fence !== null) {
+        if (/^```/.test(line)) { out.push(`<pre><code>${esc(fence.join('\n'))}</code></pre>`); fence = null } else fence.push(line)
+        continue
+      }
+      if (/^```/.test(line)) { flush(); close(); fence = []; continue }
+      const heading = /^(#{1,3})\s+(.*)$/.exec(line)
+      if (heading) { flush(); close(); out.push(`<h${heading[1].length}>${inline(heading[2])}</h${heading[1].length}>`); continue }
+      const bullet = /^\s*[-*]\s+(.*)$/.exec(line)
+      const numbered = /^\s*\d+[.)]\s+(.*)$/.exec(line)
+      if (bullet || numbered) {
+        flush()
+        const tag = bullet ? 'ul' : 'ol'
+        if (list !== tag) { close(); out.push(`<${tag}>`); list = tag }
+        out.push(`<li>${inline((bullet || numbered)[1])}</li>`)
+        continue
+      }
+      if (line.trim() === '') { flush(); close(); continue }
+      close()
+      para.push(line.trim())
+    }
+    if (fence !== null) out.push(`<pre><code>${esc(fence.join('\n'))}</code></pre>`)
+    flush()
+    close()
+    return out.join('')
+  }
+
+  function header() {
+    const s = state.snapshot
+    const live = !s ? '' : s.online ? `<span class="chip"><span class="dot ok"></span>${esc(w().online)}${s.version ? ` · ${esc(s.version)}` : ''}</span>` : `<span class="chip"><span class="dot err"></span>${esc(s.error === 'unauthorized' ? w().unauthorized : w().offline)}</span>`
+    return `<div class="top">${RAVEN}<h1>Muninn</h1><span class="tag">· ${esc(w().tagline)}</span><span class="grow"></span>${live}</div>`
+  }
+
+  const searchForm = (value, id) => `<form class="search" data-form="${id}"><input type="search" name="q" value="${esc(value)}" placeholder="${esc(w().placeholder)}" aria-label="${esc(w().search)}" /><button class="btn primary" type="submit">${esc(w().go)}</button></form>`
+
+  function pageItem(ref, index, list, extra) {
+    return `<li><button class="item" data-open="${list}:${index}"><div class="title">${esc(ref.title)}</div><div class="meta">${esc(kind(ref.kind))}${extra ? ` · ${esc(extra)}` : ''} · ${esc(ago(ref.updatedAt))}</div>${ref.snippet ? `<div class="snippet">${esc(ref.snippet)}</div>` : ''}</button></li>`
+  }
+
+  function dashboard() {
+    const s = state.snapshot
+    if (!s) return '<p class="faint">…</p>'
+    if (!s.online) return `<div class="card"><p class="error">${esc(s.error === 'unauthorized' ? w().unauthorizedHint : w().offlineHint(s.server))}</p><button class="btn" data-action="refresh">${esc(w().refresh)}</button></div>`
+
+    const projects = s.projects || []
+    const picker = projects.length ? `<select data-pick aria-label="${esc(w().pick)}">${projects.map(p => `<option value="${esc(`${p.workspace}/${p.project}`)}"${s.scope && s.scope.workspace === p.workspace && s.scope.project === p.project ? ' selected' : ''}>${esc(`${p.workspace} / ${p.project} (${p.pages})`)}</option>`).join('')}${s.scope ? '' : `<option value="" selected>${esc(s.repo || '—')}</option>`}</select>` : ''
+
+    const parts = []
+    if (!s.scope) parts.push(`<div class="card"><p class="notice">${esc(w().nothing(s.repo || '—'))}</p>${picker ? `<div class="row">${picker}</div>` : ''}</div>`)
+    else {
+      const c = s.counts || { pages: 0, sessions: 0, observations: 0 }
+      parts.push(`<div class="card"><div class="row"><span class="where grow">${esc(scopeLabel(s))}</span></div><div class="stats"><div class="stat"><b>${c.pages}</b><span>${esc(w().pages(c.pages))}</span></div><div class="stat"><b>${c.sessions}</b><span>${esc(w().sessions(c.sessions))}</span></div><div class="stat"><b>${c.observations}</b><span>${esc(w().observations(c.observations))}</span></div></div><div class="sub">${esc(w().last)}: ${esc(ago(s.lastAt))}</div>${picker ? `<div class="row" style="margin-top:8px">${picker}</div>` : ''}</div>`)
+    }
+
+    const h = s.handoff
+    if (h) {
+      const steps = (h.nextSteps || []).slice(0, 5).map(x => `<li>${esc(x)}</li>`).join('')
+      const open = (h.openQuestions || []).slice(0, 3).map(x => `<li>${esc(x)}</li>`).join('')
+      parts.push(`<div class="card handoff ${esc(h.state)}"><h2>${esc(w().handoff)} · <span class="state ${esc(h.state)}">${esc(w().states[h.state] || h.state)}</span> · ${esc(w().from(h.agent))} · ${esc(ago(h.at))}</h2>${h.summary ? `<div>${esc(h.summary)}</div>` : ''}${steps ? `<div class="sub" style="margin-top:6px">${esc(w().next)}</div><ul>${steps}</ul>` : ''}${open ? `<div class="sub" style="margin-top:6px">${esc(w().open)}</div><ul>${open}</ul>` : ''}</div>`)
+    }
+
+    parts.push(`<div class="card"><h2>${esc(w().search)}</h2>${searchForm('', 'home')}</div>`)
+
+    if (s.scope) {
+      const recent = s.recent || []
+      parts.push(`<div class="card"><h2>${esc(w().recent)}</h2>${recent.length ? `<ul class="list">${recent.map((ref, i) => pageItem(ref, i, 'recent')).join('')}</ul>` : `<p class="notice">${esc(w().noRecent)}</p>`}</div>`)
+    }
+
+    parts.push(`<div class="row"><button class="btn link" data-action="refresh">${esc(w().refresh)}</button><button class="btn link" data-action="web">${esc(w().web)} ↗</button></div>`)
+    return parts.join('')
+  }
+
+  function search() {
+    const hits = state.hits
+    return `<div class="nav"><button class="btn link" data-action="home">${esc(w().back)}</button><span class="grow"></span><button class="btn link" data-action="scope">${esc(state.everywhere ? w().here : w().everywhere)}</button></div><div class="card">${searchForm(state.query, 'again')}</div><div class="card"><h2>${esc(hits.length ? w().results(hits.length, state.query, state.everywhere) : w().none(state.query))}</h2>${hits.length ? `<ul class="list">${hits.map((hit, i) => pageItem(hit, i, 'hits', state.everywhere ? `${hit.workspace} / ${hit.project}` : '')).join('')}</ul>` : ''}</div>`
+  }
+
+  function page() {
+    const p = state.page
+    if (!p) return dashboard()
+    return `<div class="nav"><button class="btn link" data-action="${state.query ? 'results' : 'home'}">${esc(w().back)}</button><span class="grow"></span><button class="btn link" data-action="web-page">${esc(w().web)} ↗</button></div><div class="card"><div class="sub">${esc(kind(p.kind))} · ${esc(`${p.workspace} / ${p.project}`)} · ${esc(ago(p.updatedAt))}</div><div class="md">${markdown(p.body)}</div></div>`
+  }
+
+  // The content's own height (the body's box), so the frame shrinks as well as grows.
+  let lastHeight = 0
+  function reportSize() {
+    const height = Math.ceil(document.body.getBoundingClientRect().height)
+    if (height !== lastHeight) {
+      lastHeight = height
+      notify('ui/notifications/size-changed', { height })
+    }
+  }
+
+  function render() {
+    const body = state.view === 'search' ? search() : state.view === 'page' ? page() : dashboard()
+    root.className = state.busy ? 'busy' : ''
+    root.innerHTML = header() + (state.error ? `<p class="error">${esc(state.error)}</p>` : '') + body
+    reportSize()
+  }
+
+  const webUrl = (base, ref) => (ref ? `${base}/web/w/${encodeURIComponent(ref.workspace)}/${encodeURIComponent(ref.project)}${ref.path ? `/p/${ref.path.split('/').map(encodeURIComponent).join('/')}` : ''}` : `${base}/web`)
+
+  function openLink(url) {
+    request('ui/open-link', { url }).catch(() => window.open(url, '_blank', 'noopener'))
+  }
+
+  root.addEventListener('submit', event => {
+    const form = event.target.closest('form[data-form]')
+    if (!form) return
+    event.preventDefault()
+    const query = String(new FormData(form).get('q') || '').trim()
+    if (query) call('muninn_search', { query, everywhere: form.dataset.form === 'again' ? state.everywhere : !(state.snapshot && state.snapshot.scope), project: state.snapshot && state.snapshot.scope ? `${state.snapshot.scope.workspace}/${state.snapshot.scope.project}` : undefined })
+  })
+
+  root.addEventListener('change', event => {
+    const select = event.target.closest('select[data-pick]')
+    if (select && select.value) call('muninn', { project: select.value })
+  })
+
+  root.addEventListener('click', event => {
+    const opener = event.target.closest('[data-open]')
+    if (opener) {
+      const [list, index] = opener.dataset.open.split(':')
+      const ref = (list === 'hits' ? state.hits : (state.snapshot && state.snapshot.recent) || [])[Number(index)]
+      if (ref) call('muninn_page', { workspace: ref.workspace, project: ref.project, path: ref.path })
+      return
+    }
+    const link = event.target.closest('a[data-link]')
+    if (link) { event.preventDefault(); openLink(link.dataset.link); return }
+    const action = event.target.closest('[data-action]')
+    if (!action) return
+    const s = state.snapshot
+    const project = s && s.scope ? `${s.scope.workspace}/${s.scope.project}` : undefined
+    switch (action.dataset.action) {
+      case 'refresh': call('muninn', { project }); break
+      case 'home': state.view = 'dashboard'; state.query = ''; render(); break
+      case 'results': state.view = 'search'; render(); break
+      case 'scope': call('muninn_search', { query: state.query, everywhere: !state.everywhere, project }); break
+      case 'web': if (s) openLink(webUrl(s.server, s.scope || undefined)); break
+      case 'web-page': if (s && state.page) openLink(webUrl(s.server, state.page)); break
+    }
+  })
+
+  new ResizeObserver(reportSize).observe(document.body)
+
+  ;(async () => {
+    try {
+      const init = await request('ui/initialize', { protocolVersion: '2026-01-26', appInfo: { name: 'muninn', version: '0.1.0' }, appCapabilities: {} })
+      applyContext(init && init.hostContext)
+    } catch (error) {
+      // A host without the handshake still sends the tool result.
+    }
+    notify('ui/notifications/initialized', {})
+    // Opened from the app rather than a tool call: fetch the dashboard ourselves.
+    setTimeout(() => { if (!state.view) call('muninn', {}) }, 1500)
+  })()
+})()
+</script>
+</body>
+</html>

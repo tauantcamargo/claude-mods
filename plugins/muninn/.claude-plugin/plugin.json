@@ -1,0 +1,11 @@
+{
+  "name": "muninn",
+  "version": "0.1.0",
+  "description": "Muninn, Odin's raven of memory: your ai-memory in Claude Code. A /muninn pane (and a /mods tab) with the project's memory, the last handoff, search and recent pages, a status-line count and a toast when a handoff arrives.",
+  "author": {
+    "name": "Tauan Camargo",
+    "url": "https://github.com/tauantcamargo"
+  },
+  "types": "./types/index.d.ts",
+  "license": "MIT"
+}

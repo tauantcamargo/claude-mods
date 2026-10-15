@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "muninn": {
+      "command": "/bin/sh",
+      "args": ["-c", "exec \"${CODEX_MCP_NODE_PATH:-node}\" ./server.mjs \"$@\"", "--"],
+      "cwd": ".",
+      "env_vars": ["PATH", "HOME", "CODEX_MCP_NODE_PATH", "AI_MEMORY_SERVER_URL", "AI_MEMORY_AUTH_TOKEN", "AI_MEMORY_DATA_DIR", "XDG_DATA_HOME"],
+      "tool_timeout_sec": 30
+    }
+  }
+}
