@@ -1,0 +1,10 @@
+{
+  "name": "huginn",
+  "version": "0.1.0",
+  "description": "Huginn, Odin's raven of thought: matches model and effort to each step. Skills that set the effort for the rest of the turn without breaking the prompt cache (/huginn:deep, /huginn:quick, /huginn:max), Sonnet, Opus and Fable subagents for delegated work, a session-start policy that tells Claude when to use which, and a status-line chip with the active tier.",
+  "author": {
+    "name": "Tauan Camargo",
+    "url": "https://github.com/tauantcamargo"
+  },
+  "license": "MIT"
+}

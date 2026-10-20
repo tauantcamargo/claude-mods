@@ -6,6 +6,7 @@ My Claude Code mods in one marketplace. `/mods` opens one pane with a tab per mo
 | --- | --- | --- |
 | mods | [tauantcamargo/claude-mods-hub](https://github.com/tauantcamargo/claude-mods-hub) (fork of mvacoimbra's, plus a Muninn tab) | The `/mods` pane |
 | muninn | [`plugins/muninn`](plugins/muninn) | **Muninn**, Odin's raven of memory: your [ai-memory](https://github.com/akitaonrails/ai-memory) in a `/muninn` pane and a `/mods` tab (the project's memory, the last handoff, search, recent pages), a count in the status line and a toast when a handoff arrives. Also for the Codex app, below |
+| huginn | [`plugins/huginn`](plugins/huginn) | **Huginn**, Odin's raven of thought: matches model and effort to each step. `/huginn:deep` (xhigh), `/huginn:quick` (low) and `/huginn:max` (max) set the effort for the rest of the turn and keep the prompt cache; the `huginn:light`, `huginn:deep` and `huginn:max` subagents take delegated work on Sonnet, Opus and Fable; a session-start policy tells Claude when to use which, and a `ᚺ deep·xhigh` chip in the status line shows the tier until the next prompt |
 | cache-tax | mvacoimbra fork | Keeps the prompt cache warm (costs tokens) |
 | skins | mvacoimbra fork | Themes and richer tool rows |
 | filetree | mvacoimbra fork | File tree of what Claude touches |
@@ -20,6 +21,7 @@ My Claude Code mods in one marketplace. `/mods` opens one pane with a tab per mo
 claude plugin marketplace add tauantcamargo/claude-mods
 claude plugin install mods@tauan-mods
 claude plugin install muninn@tauan-mods
+claude plugin install huginn@tauan-mods
 claude plugin install cache-tax@tauan-mods
 claude plugin install skins@tauan-mods
 claude plugin install filetree@tauan-mods

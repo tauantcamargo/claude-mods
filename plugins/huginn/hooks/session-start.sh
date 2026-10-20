@@ -1,0 +1,6 @@
+#!/bin/sh
+# Huginn's SessionStart hook (every source: startup, resume, clear, compact): hands Claude the
+# policy for matching effort and model to each step. Static JSON on stdout, nothing else.
+cat <<'JSON'
+{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Huginn: match effort and model to each step of the task.\n- Before a hard step (an architecture or approach, root-causing a bug, invariants, concurrency, money, auth/security, data migrations, ambiguous requirements, planning a ticket) invoke the huginn:deep skill (xhigh); after two failed attempts, or on a step the user calls critical, huginn:max (max).\n- For a mechanical step (renames, formatting, boilerplate, config, git/gh plumbing, known commands, commit or PR text) invoke huginn:quick (low). These skills change effort for the rest of the turn only, and keep the prompt cache.\n- Delegate bulk mechanical work (many-file edits, running and reporting builds or tests) to the huginn:light subagent (Sonnet); hand isolated hard analysis or design to the huginn:deep subagent (Opus), and the hardest problems to huginn:max (Fable), each with a self-contained brief.\n- Never ask the user to run /model or /effort (they save new defaults), and don't switch the main session's model mid-task: model changes belong in subagents."}}
+JSON
