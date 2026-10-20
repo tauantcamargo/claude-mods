@@ -1,17 +1,12 @@
 {
   "name": "tauan-mods",
-  "description": "Tauan's Claude Code mods: one /mods pane for all of them, plus Workers (subagents as Norse and Roman gods).",
+  "description": "Tauan's Claude Code mods: one /mods pane for all of them, plus Muninn (your ai-memory).",
   "owner": { "name": "Tauan Camargo", "url": "https://github.com/tauantcamargo" },
   "plugins": [
     {
       "name": "mods",
-      "description": "One /mods pane with a tab per installed mod (fork of mvacoimbra/claude-mods-hub with a Workers tab)",
+      "description": "One /mods pane with a tab per installed mod (fork of mvacoimbra/claude-mods-hub with a Muninn tab)",
       "source": { "source": "github", "repo": "tauantcamargo/claude-mods-hub" }
-    },
-    {
-      "name": "workers",
-      "description": "Salão dos Deuses: subagents become Norse and Roman gods in a carved-stone pane, with a tab in /mods",
-      "source": "./plugins/workers"
     },
     {
       "name": "muninn",
